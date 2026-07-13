@@ -687,7 +687,18 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
         animateParticles();
-    </script>
+    
+document.addEventListener('DOMContentLoaded', function(){
+ const savedTheme=localStorage.getItem('theme');
+ const dark=savedTheme==='dark';
+ document.documentElement.classList.toggle('dark',dark);
+ if(typeof updateThemeIcon==='function') updateThemeIcon(dark);
+ if(typeof applyLanguage==='function') applyLanguage();
+ if(window.lucide){lucide.createIcons();}
+});
+
+</script>
     <script src="https://unpkg.com/lucide@latest"></script>
+<script>window.addEventListener('load',()=>{if(window.lucide){lucide.createIcons();}});</script>
 </body>
 </html>
