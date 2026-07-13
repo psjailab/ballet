@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일상에 발레를 더하다 - 프리미엄 취미 발레 가이드</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        paleSkyBlue: '#e3fafc',
+                        softSkyBlue: '#c5f6fa',
+                        deepSkyBlue: '#11999e',
+                        textDark: '#1a252c',
+                        textMuted: '#5a6872',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b',
+                        darkPanel: 'rgba(15, 23, 42, 0.7)'
+                    },
+                    fontFamily: {
+                        sans: ['HankyorehGyeol', 'Noto Sans KR', 'sans-serif'],
+                        serif: ['Cinzel Decorative', 'serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'HankyorehGyeol';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/HankyorehGyeol.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html, body, button, a, input, textarea {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24'>🩰</text></svg>"), auto !important;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1fbe7; }
+        ::-webkit-scrollbar-thumb { background: #c5f6fa; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #11999e; }
+        
+        .glass-panel {
+            background: rgba(227, 250, 252, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes gentleFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .animated-bg {
+            background: linear-gradient(-45deg, #e3fafc, #f4fefe, #defcfc, #edfefe);
+            background-size: 400% 400%;
+            animation: gentleFlow 12s ease infinite;
+        }
+        
+        .dark .animated-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #111827, #311042);
+            background-size: 400% 400%;
+        }
+        
+        .bold-highlight { font-weight: 700 !important; }
+
+        /* [기능 추가] 파티클 캔버스 스타일 (최하단 배경 배치) */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none; /* 클릭 이벤트 통과 */
+        }
+
+        /* [기능 추가] 제목 타이핑 효과용 CSS (커서 애니메이션) */
+        .typewriter-text::after {
+            content: '|';
+            display: inline-block;
+            animation: blink 1s step-end infinite;
+            color: #11999e;
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="font-sans text-textDark bg-[#f7ffff] dark:bg-darkBg dark:text-slate-100 overflow-x-hidden transition-colors duration-300">
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div id="scrollIndicator" class="fixed top-0 left-0 h-1 bg-deepSkyBlue z-[60] transition-all duration-75" style="width: 0%;"></div>
+
+    <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between relative z-10">
+            <a href="#" class="flex items-center gap-3 group">
+                <span class="text-xl md:text-2xl font-bold tracking-widest font-serif text-deepSkyBlue group-hover:text-blue-900 dark:group-hover:text-cyan-400 transition-colors">
+                    Ballet de l'Aube
+                </span>
+                <span class="hidden lg:inline-block w-[1px] h-4 bg-cyan-200 dark:bg-slate-700"></span>
+                <span id="lang-subbrand" class="hidden lg:inline-block text-xs font-semibold tracking-wider text-textMuted dark:text-slate-400 uppercase">일상에 발레를 더하다</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-2 text-sm font-medium tracking-wide">
+                <a href="#story" id="nav-story" class="px-3.5 py-2 bg-black text-white dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-neutral-800 dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">발레 이야기</a>
+                <a href="#attire" id="nav-attire" class="px-3.5 py-2 bg-black text-white dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-neutral-800 dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">의상과 도구</a>
+                <a href="#fundamentals" id="nav-fundamentals" class="px-3.5 py-2 bg-black text-white dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-neutral-800 dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">기본 자세</a>
+                <a href="#transformation" id="nav-trans" class="px-3.5 py-2 bg-black text-white dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-neutral-800 dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">연습 효과</a>
+                <a href="#gala" id="nav-gala" class="px-3.5 py-2 bg-black text-white dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-neutral-800 dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">콩쿠르 신청</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <button onclick="toggleLanguage()" id="langBtn" class="px-3 py-2 text-xs font-bold rounded-xl bg-white/80 dark:bg-slate-800 border border-cyan-100 dark:border-slate-700 text-deepSkyBlue shadow-sm hover:bg-neutral-50 transition-all relative z-20">EN</button>
+                <button onclick="toggleDarkMode()" id="darkModeBtn" class="p-2 rounded-xl bg-white/80 dark:bg-slate-800 border border-cyan-100 dark:border-slate-700 text-textDark dark:text-amber-400 shadow-sm transition-all" aria-label="화면 테마 변경"><i id="themeIcon" data-lucide="moon" class="w-4 h-4 relative z-20"></i></button>
+                <div class="hidden sm:block"><a href="#gala" id="nav-action" class="px-4 py-2 bg-black text-white dark:bg-cyan-500 dark:text-slate-900 text-xs font-bold rounded-full hover:bg-neutral-800 dark:hover:bg-cyan-400 transition-all tracking-wider uppercase relative z-20">무대 도전하기</a></div>
+            </div>
+        </div>
+    </header>
+
+    <section id="story" class="relative min-h-screen flex flex-col justify-center items-center animated-bg px-6 pt-24 overflow-hidden transition-colors duration-300">
+        <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none select-none z-0">
+            <span class="font-serif text-[22vw] tracking-tighter text-deepSkyBlue select-none">Ballet</span>
+        </div>
+        
+        <div class="relative z-10 max-w-4xl mx-auto text-center space-y-8 px-4" id="story-content">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-200 bg-white/60 dark:bg-darkCard/80 text-deepSkyBlue text-xs md:text-sm font-bold tracking-widest uppercase shadow-sm">
+                <span class="w-1.5 h-1.5 bg-deepSkyBlue rounded-full animate-ping"></span>Pour La Ligne Élégante
+            </div>
+            
+            <h1 id="story-heading" class="text-4xl sm:text-5xl md:text-6xl font-normal leading-tight md:leading-snug text-textDark dark:text-white tracking-tight">
+                가장 우아한 나를 만나는 시간,<br class="hidden sm:inline">
+                <span class="font-serif font-bold text-deepSkyBlue typewriter-text" id="typer-heading">Pour l'Amour de l'Art</span>
+            </h1>
+            
+            <p id="story-p" class="text-base sm:text-lg md:text-xl font-normal text-textMuted dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                바쁜 일상 속, 무너진 <span class="bold-highlight text-textDark dark:text-white">몸의 밸런스</span>를 복원하고 호흡에 귀 기울입니다. <br>
+                단순한 스트레칭을 넘어 정서적 안정과 우아한 실루엣을 완성하는 깊이 있는 입문 스토리.
+            </p>
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-20">
+                <a href="#attire" id="story-btn1" class="w-full sm:w-auto px-8 py-4 bg-black text-white dark:bg-slate-100 dark:text-slate-900 text-sm font-bold rounded-full shadow-lg hover:bg-neutral-800 dark:hover:bg-slate-200 transition-all hover:-translate-y-1 tracking-wide text-center">나만의 첫 의상 알아보기</a>
+                <a href="#fundamentals" id="story-btn2" class="w-full sm:w-auto px-8 py-4 bg-white/90 text-textDark dark:bg-slate-800 dark:text-slate-100 text-sm font-bold rounded-full shadow-sm hover:bg-paleSkyBlue dark:hover:bg-slate-700 transition-all hover:-translate-y-1 border border-cyan-100 dark:border-slate-700 text-center relative z-20">기본 자세 트레이닝 시작</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="attire" class="py-24 bg-white dark:bg-darkBg px-6 transition-colors duration-300 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-xl mx-auto mb-16 relative z-10">
+                <span class="font-serif text-sm tracking-widest text-deepSkyBlue uppercase font-bold">Attire & Tools</span>
+                <h2 id="attire-heading" class="text-3xl font-normal text-textDark dark:text-white mt-2">나를 가꾸는 첫 걸음, <span class="bold-highlight text-deepSkyBlue">의상과 도구</span></h2>
+                <div class="w-12 h-[2px] bg-cyan-200 dark:bg-slate-700 mx-auto mt-4"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                <div class="p-8 rounded-3xl bg-paleSkyBlue/40 dark:bg-darkCard border border-cyan-100/60 dark:border-slate-700/50 shadow-sm relative z-10">
+                    <div class="w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center text-deepSkyBlue mb-6 shadow-sm"><i data-lucide="sparkles" class="w-6 h-6relative z-20"></i></div>
+                    <h3 id="card-leotard-t" class="text-xl font-bold mb-3 dark:text-slate-100 relative z-20">레오타드 (Leotard)</h3>
+                    <p id="card-leotard-d" class="text-textMuted dark:text-slate-400 leading-relaxed relative z-20">신체의 움직임과 올바른 골반 정렬을 한눈에 확인할 수 있는 가장 핵심적인 기본 의상입니다. 편안하면서도 몸을 견고하게 지지해 주는 제품을 권장합니다.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-paleSkyBlue/40 dark:bg-darkCard border border-cyan-100/60 dark:border-slate-700/50 shadow-sm relative z-10">
+                    <div class="w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center text-deepSkyBlue mb-6 shadow-sm"><i data-lucide="footprints" class="w-6 h-6relative z-20"></i></div>
+                    <h3 id="card-shoes-t" class="text-xl font-bold mb-3 dark:text-slate-100 relative z-20">천 슈즈 (Soft Shoes)</h3>
+                    <p id="card-shoes-d" class="text-textMuted dark:text-slate-400 leading-relaxed relative z-20">발가락 끝의 감각을 섬세하게 깨우고 마루에서의 부상을 방지하는 필수 도구입니다. 가죽이나 캔버스 소재 중 자신의 발볼에 맞춰 피팅하는 것이 중요합니다.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-paleSkyBlue/40 dark:bg-darkCard border border-cyan-100/60 dark:border-slate-700/50 shadow-sm relative z-10">
+                    <div class="w-12 h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center text-deepSkyBlue mb-6 shadow-sm"><i data-lucide="layers" class="w-6 h-6relative z-20"></i></div>
+                    <h3 id="card-band-t" class="text-xl font-bold mb-3 dark:text-slate-100 relative z-20">스트레칭 밴드</h3>
+                    <p id="card-band-d" class="text-textMuted dark:text-slate-400 leading-relaxed relative z-20">유연성을 서서히 확보하고 코어의 안정성을 서포트하는 보조 도구입니다. 무리한 자극보다는 정확한 자극점을 인지하는 용도로 활용됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="fundamentals" class="py-24 bg-paleSkyBlue/30 dark:bg-slate-900/60 px-6 transition-colors duration-300 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-xl mx-auto mb-16 relative z-10">
+                <span class="font-serif text-sm tracking-widest text-deepSkyBlue uppercase font-bold">The Fundamentals</span>
+                <h2 id="fund-heading" class="text-3xl font-normal text-textDark dark:text-white mt-2">중심을 잡는 클래식, <span class="bold-highlight text-deepSkyBlue">기본 자세</span></h2>
+                <div class="w-12 h-[2px] bg-cyan-200 dark:bg-slate-700 mx-auto mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch relative z-10">
+                <div class="space-y-6 flex flex-col justify-between relative z-10">
+                    <div class="flex gap-4 items-start p-6 rounded-2xl bg-white dark:bg-darkCard shadow-sm border border-cyan-100/30 dark:border-slate-700/50 flex-1 relative z-10">
+                        <span class="font-serif text-2xl font-bold text-deepSkyBlue">A</span>
+                        <div>
+                            <h4 id="pos-plie-t" class="text-lg font-bold mb-2 text-textDark dark:text-slate-100relative z-20">쁠리에 (Plié)</h4>
+                            <p id="pos-plie-d" class="text-textMuted dark:text-slate-400 text-sm leading-relaxed mb-3 relative z-20">무릎을 바깥쪽(Turn-out)으로 부드럽게 굽혔다가 펴는 발레의 가장 기초적인 동작입니다.</p>
+                            <div class="p-3 bg-neutral-50 dark:bg-slate-800/60 rounded-xl space-y-1.5 border border-neutral-100 dark:border-slate-700/40 text-xs text-textMuted dark:text-slate-400relative z-20">
+                                <p class="relative z-20"><strong class="text-textDark dark:text-slate-200 relative z-20" id="pos-plie-sub1">• 드미 쁠리에 (Demi-plié):</strong> 뒤꿈치를 바닥에 붙인 채 무릎을 반만 굽히는 동작</p>
+                                <p class="relative z-20"><strong class="text-textDark dark:text-slate-200 relative z-20" id="pos-plie-sub2">• 그랑 쁠리에 (Grand-plié):</strong> 무릎을 깊게 굽히며 자연스럽게 뒤꿈치가 바닥에서 들리는 동작</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 items-start p-6 rounded-2xl bg-white dark:bg-darkCard shadow-sm border border-cyan-100/30 dark:border-slate-700/50 flex-1 relative z-10">
+                        <span class="font-serif text-2xl font-bold text-deepSkyBlue relative z-20">B</span>
+                        <div>
+                            <h4 id="pos-tendu-t" class="text-lg font-bold mb-2 text-textDark dark:text-slate-100 relative z-20">탄듀 (Tendu)</h4>
+                            <p id="pos-tendu-d" class="text-textMuted dark:text-slate-400 text-sm leading-relaxed mb-3 relative z-20">발바닥 전체로 바닥을 강하게 쓸어 밀어내면서, 다리를 앞(En avant)·옆(A la seconde)·뒤(En arrière)로 길게 뻗어줍니다.</p>
+                            <p id="pos-tendu-hp" class="text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 p-2.5 rounded-lg font-medium border border-amber-100/60 dark:border-amber-900/40 relative z-20">
+                                <strong>핵심 포인트:</strong> 이동하는 동안 발가락 끝은 항상 바닥에 밀착되어 있어야 하며, 다리 전체에 단단한 긴장감을 유지해야 합니다.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 items-start p-6 rounded-2xl bg-white dark:bg-darkCard shadow-sm border border-cyan-100/30 dark:border-slate-700/50 flex-1 relative z-10">
+                        <span class="font-serif text-2xl font-bold text-deepSkyBlue relative z-20">C</span>
+                        <div>
+                            <h4 id="pos-jete-t" class="text-lg font-bold mb-2 text-textDark dark:text-slate-100 relative z-20">제떼 / 드가지 (Jeté / Dégagé)</h4>
+                            <p id="pos-jete-d" class="text-textMuted dark:text-slate-400 text-sm leading-relaxed mb-3 relative z-20">탄듀와 시작은 같으나, 발끝이 바닥에서 완전히 떨어져 공중으로 약 45도 각도로 경쾌하게 들어 올려지는 동작입니다.</p>
+                            <p id="pos-jete-hp" class="text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 p-2.5 rounded-lg font-medium border border-amber-100/60 dark:border-amber-900/40 relative z-20">
+                                <strong>핵심 포인트:</strong> 발끝을 공중을 향해 가볍고 빠르게 던지듯 밀어내는 순발력과 에너지가 필요합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-8 bg-white dark:bg-darkCard rounded-3xl border border-cyan-100 dark:border-slate-700 shadow-sm text-center flex flex-col justify-center items-center overflow-hidden relative group relative z-10">
+                    <div class="absolute inset-0 z-0 opacity-20 dark:opacity-10 transition-opacity z-0">
+                        <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=800&q=80" alt="Ballet Barre Practice" class="w-full h-full object-coverrelative z-10">
+                    </div>
+                    
+                    <div class="relative z-10 flex flex-col items-center z-10 relative">
+                        <span class="text-xs uppercase tracking-widest text-deepSkyBlue font-bold block mb-2 relative z-20">Interactive Guide</span>
+                        <h3 id="sim-title" class="text-2xl font-bold text-textDark dark:text-white mb-4 relative z-20">버추얼 바(Barre) 포지션 분석</h3>
+                        <p id="sim-desc" class="text-textMuted dark:text-slate-400 mb-8 text-sm leading-relaxed max-w-sm relative z-20">거울 앞이 아니더라도 내가 서 있는 공간에서 정밀한 신체 정렬 메커니즘을 경험할 수 있습니다. 아래 시스템 연동 버튼을 선택하여 스마트 자이로 센서 시뮬레이션 시스템을 가동하세요.</p>
+                        <div class="w-full max-w-xs p-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl border border-cyan-100/80 dark:border-slate-700 mb-6 text-left space-y-2 shadow-sm relative z-20">
+                            <div id="sim-status" class="flex items-center gap-2 text-xs font-semibold text-deepSkyBlue relative z-20"><span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse relative z-20"></span>센서 모듈 대기 중</div>
+                            <p id="sim-status-d" class="text-[11px] text-textMuted dark:text-slate-400 leading-tight relative z-20">디바이스의 카메라 앵글 정렬 상태 및 가상 Barre 가동 각도를 트래킹합니다.</p>
+                        </div>
+                        <button id="sim-btn" class="w-full max-w-xs py-4 bg-black text-white dark:bg-slate-100 dark:text-slate-900 font-bold rounded-xl text-xs uppercase tracking-wider hover:bg-neutral-800 dark:hover:bg-slate-200 transition-colors shadow-md relative z-20" onclick="handleSimAlert()">센서 매칭 연동하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="transformation" class="py-24 bg-white dark:bg-darkBg px-6 transition-colors duration-300 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-xl mx-auto mb-12 relative z-10">
+                <span class="font-serif text-sm tracking-widest text-deepSkyBlue uppercase font-bold relative z-20">The Transformation & Community</span>
+                <h2 id="comm-heading" class="text-3xl font-normal text-textDark dark:text-white mt-2 relative z-20">나의 발레 <span class="bold-highlight text-deepSkyBlue relative z-20">연습 아카이브</span></h2>
+                <div class="w-12 h-[2px] bg-cyan-200 dark:bg-slate-700 mx-auto mt-4 z-20 relative"></div>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-paleSkyBlue/30 dark:bg-slate-900/40 rounded-3xl p-5 md:p-6 border border-cyan-100/60 dark:border-slate-800/60 relative z-10">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-cyan-100/60 dark:border-slate-800/60 pb-3 z-10 relative">
+                    <div class="text-left z-10 relative">
+                        <h3 id="board-title" class="text-lg font-bold text-textDark dark:text-white flex items-center gap-1.5 leading-snug z-20 relative">
+                            <i data-lucide="message-square" class="w-4.5 h-4.5 text-deepSkyBlue z-20 relative"></i>오늘의 클래스 리포트 🩰
+                        </h3>
+                        <p id="board-desc" class="text-textMuted dark:text-slate-400 text-[11px] leading-snug mt-0.5 z-20 relative">서로의 오벨(Aube) 연습 기록과 피드백을 자유롭게 나누는 소통의 공간입니다.</p>
+                    </div>
+                    <span id="board-badge" class="text-[11px] font-semibold bg-white dark:bg-slate-800 px-2.5 py-1 rounded-full border border-cyan-200 dark:border-slate-700 text-deepSkyBlue self-start sm:self-auto shadow-sm z-20 relative">라이브 피드 가동 중</span>
+                </div>
+
+                <form id="diaryForm" class="bg-white dark:bg-darkCard p-4 rounded-2xl border border-cyan-100 dark:border-slate-700 shadow-sm space-y-3 mb-6 text-left z-10 relative" onsubmit="addDiaryRow(event)">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 z-10 relative">
+                        <div>
+                            <label id="lbl-nick" class="block text-[11px] font-bold text-textMuted dark:text-slate-400 uppercase tracking-wider mb-1" for="diaryAuthor z-20 relative">닉네임 / 입문 주차</label>
+                            <input type="text" id="diaryAuthor" required class="w-full px-3 py-2 rounded-xl border border-cyan-100 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-deepSkyBlue/30 text-xs text-textDark dark:text-slate-100 transition-all z-20 relative">
+                        </div>
+                        <div>
+                            <label id="lbl-pose" class="block text-[11px] font-bold text-textMuted dark:text-slate-400 uppercase tracking-wider mb-1" for="diaryTitle z-20 relative">오늘 배운 주요 자세</label>
+                            <input type="text" id="diaryTitle" required class="w-full px-3 py-2 rounded-xl border border-cyan-100 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-deepSkyBlue/30 text-xs text-textDark dark:text-slate-100 transition-all z-20 relative">
+                        </div>
+                    </div>
+                    <div>
+                        <label id="lbl-content" class="block text-[11px] font-bold text-textMuted dark:text-slate-400 uppercase tracking-wider mb-1" for="diaryContent z-20 relative">연습 일지 및 클래스 후기</label>
+                        <textarea id="diaryContent" required rows="3" class="w-full px-3 py-2 rounded-xl border border-cyan-100 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-deepSkyBlue/30 text-xs text-textDark dark:text-slate-100 transition-all resize-none leading-snug z-20 relative"></textarea>
+                    </div>
+                    <div class="flex justify-end z-10 relative">
+                        <button type="submit" id="board-submit-btn" class="px-4 py-2 bg-black text-white dark:bg-slate-100 dark:text-slate-900 font-bold rounded-xl text-xs hover:bg-neutral-800 dark:hover:bg-slate-200 transition-all shadow-sm flex items-center gap-1 z-20 relative">
+                            <i data-lucide="send" class="w-3 h-3 z-20 relative"></i> 후기 등록하기
+                        </button>
+                    </div>
+                </form>
+
+                <div id="diaryFeedContainer" class="space-y-3 text-left z-10 relative">
+                    <div class="bg-white/80 dark:bg-darkCard p-4 rounded-2xl border border-white dark:border-slate-700/50 shadow-sm space-y-1.5 z-10 relative">
+                        <div class="flex items-center justify-between gap-2 z-10 relative">
+                            <span class="text-xs font-bold text-deepSkyBlue leading-tight z-20 relative" id="feed-a1">플리에러버 (6개월 차)</span>
+                            <span class="text-[10px] text-textMuted dark:text-slate-400 z-20 relative" id="feed-time1">방금 전</span>
+                        </div>
+                        <h5 class="text-xs font-bold text-textDark dark:text-slate-200 leading-snug z-20 relative" id="feed-t1">턴아웃할 때 무릎 방향 신경 쓰기 기록</h5>
+                        <p class="text-xs text-textMuted dark:text-slate-400 leading-snug z-20 relative" id="feed-c1">오늘 탄듀 나갈 때 발바닥 전체로 바닥 쓸어내는 힘을 더 주니까 훨씬 중심이 잘 잡히네요! 거울 안 봐도 코어에 힘 들어가는 게 느껴져서 뿌듯해요.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gala" class="py-24 bg-paleSkyBlue/40 dark:bg-slate-900/50 px-6 border-t border-cyan-100/40 dark:border-slate-800 relative transition-colors duration-300 z-10">
+        <div class="max-w-4xl mx-auto text-center space-y-8 relative z-10">
+            <span class="font-serif text-sm tracking-widest text-deepSkyBlue uppercase font-boldrelative z-20">The Grand Gala</span>
+            <h2 id="gala-heading" class="text-3xl sm:text-4xl font-normal text-textDark dark:text-white mt-2 relative z-20">내 삶의 영광스러운 클라이막스,<br><span class="bold-highlight text-deepSkyBluerelative z-20">아마추어 콩쿠르 신청 및 로드맵</span></h2>
+            <p id="gala-desc" class="text-textMuted dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed relative z-20">취미로 시작한 발레의 종착지이자 꿈의 무대입니다. 정교하게 다져진 기량을 무대 위에서 펼치고, 나만의 예술성 성적표와 맞춤형 진단 가이드 로드맵을 받아보세요.</p>
+            
+            <div class="bg-white dark:bg-darkCard p-8 md:p-10 rounded-3xl shadow-xl border border-cyan-100/80 dark:border-slate-700 max-w-xl mx-auto text-left space-y-6 z-10 relative">
+                <div class="z-10 relative">
+                    <label id="lbl-name" class="block text-xs font-bold text-textMuted dark:text-slate-400 uppercase tracking-wider mb-2 z-20 relative" for="applicantName">신청자 성함</label>
+                    <input type="text" id="applicantName" class="w-full px-4 py-3 rounded-xl border border-cyan-100 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-deepSkyBlue/40 text-textDark dark:text-slate-100 transition-all text-sm z-20 relative">
+                </div>
+                <div class="z-10 relative">
+                    <label id="lbl-contact" class="block text-xs font-bold text-textMuted dark:text-slate-400 uppercase tracking-wider mb-2 z-20 relative" for="applicantContact">연락처</label>
+                    <input type="tel" id="applicantContact" class="w-full px-4 py-3 rounded-xl border border-cyan-100 dark:border-slate-700 bg-neutral-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-deepSkyBlue/40 text-textDark dark:text-slate-100 transition-all text-sm z-20 relative">
+                </div>
+                <button id="gala-submit-btn" class="w-full py-4 bg-black text-white dark:bg-slate-100 dark:text-slate-900 text-sm font-bold rounded-xl hover:bg-neutral-800 dark:hover:bg-slate-200 transition-colors shadow-md z-20 relative" onclick="handleGalaAlert()">무대 로드맵 및 콩쿠르 신청하기</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-textDark dark:bg-slate-950 text-white/40 text-xs text-center py-8 border-t border-white/5 dark:border-slate-900 transition-colors duration-300 relative z-10">
+        <p class="tracking-wide relative z-20">© 2026 Ballet de l'Aube. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 다국어 데이터 딕셔너리 구축 (패럴랙스 컴포넌트 추가에 따라 엘리먼트 ID 일부 변경)
+        const langPack = {
+            ko: {
+                subbrand: "일상에 발레를 더하다",
+                navStory: "발레 이야기", navAttire: "의상과 도구", navFund: "기본 자세", navTrans: "연습 효과", navGala: "콩쿠르 신청", navAction: "무대 도전하기",
+                
+                // [기능 추가] 타이핑 효과가 적용될 핵심 텍스트 데이터 (Pour l'Amour de l'Art)
+                typerHeading: "Pour l'Amour de l'Art",
+
+                storyP: "바쁜 일상 속, 무너진 <span class='bold-highlight text-textDark dark:text-white'>몸의 밸런스</span>를 복원하고 호흡에 귀 기울입니다. <br>단순한 스트레칭을 넘어 정서적 안정과 우아한 실루엣을 완성하는 깊이 있는 입문 스토리.",
+                storyBtn1: "나만의 첫 의상 알아보기", storyBtn2: "기본 자세 트레이닝 시작",
+                attireHeading: "나를 가꾸는 첫 걸음, <span class='bold-highlight text-deepSkyBlue'>의상과 도구</span>",
+                leotardT: "레오타드 (Leotard)", leotardD: "신체의 움직임과 올바른 골반 정렬을 한눈에 확인할 수 있는 가장 핵심적인 기본 의상입니다. 편안하면서도 몸을 견고하게 지지해 주는 제품을 권장합니다.",
+                shoesT: "천 슈즈 (Soft Shoes)", shoesD: "발가락 끝의 감각을 섬세하게 깨우고 마루에서의 부상을 방지하는 필수 도구입니다. 가죽이나 캔버스 소재 중 자신의 발볼에 맞춰 피팅하는 것이 중요합니다.",
+                bandT: "스트레칭 밴드", bandD: "유연성을 서서히 확보하고 코어의 안정성을 서포트하는 보조 도구입니다. 무리한 자극보다는 정확한 자극점을 인지하는 용도로 활용됩니다.",
+                fundHeading: "중심을 잡는 클래식, <span class='bold-highlight text-deepSkyBlue'>기본 자세</span>",
+                plieT: "쁠리에 (Plié)", plieD: "무릎을 바깥쪽(Turn-out)으로 부드럽게 굽혔다가 펴는 발레의 가장 기초적인 동작입니다.",
+                plieSub1: "• 드미 쁠리에 (Demi-plié): 뒤꿈치를 바닥에 붙인 채 무릎을 반만 굽히는 동작", plieSub2: "• 그랑 쁠리에 (Grand-plié): 무릎을 깊게 굽히며 자연스럽게 뒤꿈치가 바닥에서 들리는 동작",
+                tenduT: "탄듀 (Tendu)", tenduD: "발바닥 전체로 바닥을 강하게 쓸어 밀어내면서, 다리를 앞(En avant)·옆(A la seconde)·뒤(En arrière)로 길게 뻗어줍니다.",
+                tenduHp: "<strong>핵심 포인트:</strong> 이동하는 동안 발가락 끝은 항상 바닥에 밀착되어 있어야 하며, 다리 전체에 단단한 긴장감을 유지해야 합니다.",
+                jeteT: "제떼 / 드가지 (Jeté / Dégagé)", jeteD: "탄듀와 시작은 같으나, 발끝이 바닥에서 완전히 떨어져 공중으로 약 45도 각도로 경쾌하게 들어 올려지는 동작입니다.",
+                jeteHp: "<strong>핵심 포인트:</strong> 발끝을 공중을 향해 가볍고 빠르게 던지듯 밀어내는 순발력과 에너지가 필요합니다.",
+                simTitle: "버추얼 바(Barre) 포지션 분석", simDesc: "거울 앞이 아니더라도 내가 서 있는 공간에서 정밀한 신체 정렬 메커니즘을 경험할 수 있습니다. 아래 시스템 연동 버튼을 선택하여 스마트 자이로 센서 시뮬레이션 시스템을 가동하세요.",
+                simStatus: "<span class='w-2 h-2 bg-emerald-500 rounded-full animate-pulse'></span>센서 모듈 대기 중", simStatusD: "디바이스의 카메라 앵글 정렬 상태 및 가상 Barre 가동 각도를 트래킹합니다.", simBtn: "센서 매칭 연동하기",
+                commHeading: "나의 발레 <span class='bold-highlight text-deepSkyBlue'>연습 아카이브</span>",
+                boardTitle: "<i data-lucide='message-square' class='w-4.5 h-4.5 text-deepSkyBlue'></i>오늘의 클래스 리포트 🩰", boardDesc: "서로의 오벨(Aube) 연습 기록과 피드백을 자유롭게 나누는 소통의 공간입니다.", boardBadge: "라이브 피드 가동 중",
+                lblNick: "닉네임 / 입문 주차", lblPose: "오늘 배운 주요 자세", lblContent: "연습 일지 및 클래스 후기", boardSubmit: "후기 등록하기",
+                phNick: "예: 새벽발레단 / 3개월 차", phPose: "예: 드미 쁠리에 골반 정렬 맹훈련", phContent: "수업 중 헷갈렸던 감각이나 코어 자극점, 나만의 꿀팁을 기록해 주세요.",
+                feedA1: "플리에러버 (6개월 차)", feedTime1: "방금 전", feedT1: "턴아웃할 때 무릎 방향 신경 쓰기 기록", feedC1: "오늘 탄듀 나갈 때 발바닥 전체로 바닥 쓸어내는 힘을 더 주니까 훨씬 중심이 잘 잡히네요! 거울 안 봐도 코어에 힘 들어가는 게 느껴져서 뿌듯해요.",
+                galaHeading: "내 삶의 영광스러운 클라이막스,<br><span class='bold-highlight text-deepSkyBlue'>아마추어 콩쿠르 신청 및 로드맵</span>", galaDesc: "취미로 시작한 발레의 종착지이자 꿈의 무대입니다. 정교하게 다져진 기량을 무대 위에서 펼치고, 나만의 예술성 성적표와 맞춤형 진단 가이드 로드맵을 받아보세요.",
+                lblName: "신청자 성함", lblContact: "연락처", phName: "성함을 입력해 주세요.", phContact: "010-0000-0000", galaSubmit: "무대 로드맵 및 콩쿠르 신청하기",
+                alertSim: "가상 정렬 진단 기능이 로드되었습니다. 카메라 권한을 확인해주세요.", alertGala: "신청이 정상적으로 접수되었습니다. 담당 디렉터가 로드맵 유선 가이드를 도와드릴 예정입니다."
+            },
+            en: {
+                subbrand: "Add Ballet to Your Daily Life",
+                navStory: "Our Story", navAttire: "Attire & Tools", navFund: "Fundamentals", navTrans: "Effects", navGala: "Grand Gala", navAction: "Join Stage",
+                
+                // [기능 추가] 영어 타이핑 효과용 텍스트
+                typerHeading: "Pour l'Amour de l'Art",
+
+                storyP: "Restore the broken <span class='bold-highlight text-textDark dark:text-white'>body balance</span> in busy daily life and listen to your breathing. An in-depth introductory story that goes beyond mere stretching to complete emotional stability and an elegant silhouette.",
+                storyBtn1: "Discover My First Attire", storyBtn2: "Start Fundamental Training",
+                attireHeading: "The First Step to Perfect Line, <span class='bold-highlight text-deepSkyBlue'>Attire & Tools</span>",
+                leotardT: "Leotard", leotardD: "This is the most essential base clothing to check body movements and correct pelvic alignment at a glance. We recommend products that support your body firmly and comfortably.",
+                shoesT: "Soft Shoes", shoesD: "An essential tool to delicately awaken the senses of your toes and prevent injuries on the floor. It is important to fit according to your foot width from leather or canvas materials.",
+                bandT: "Stretching Band", bandD: "An auxiliary tool that gradually secures flexibility and supports core stability. It is used to recognize the exact stimulation point rather than excessive strain.",
+                fundHeading: "The Classic for Core Balance, <span class='bold-highlight text-deepSkyBlue'>The Fundamentals</span>",
+                plieT: "Plié", plieD: "A fundamental ballet movement of smoothly bending and straightening the knees outward (Turn-out).",
+                plieSub1: "• Demi-plié: Bending knees halfway with heels flat on the floor.", plieSub2: "• Grand-plié: Bending knees deeply, naturally lifting heels off the floor.",
+                tenduT: "Tendu", tenduD: "Stretching the leg long forward (En avant), sideways (A la seconde), or backward (En arrière) while sliding the foot firmly across the floor.",
+                tenduHp: "<strong>Key Point:</strong> Toes must always remain in contact with the floor during movement, and a firm tension must be maintained throughout the leg.",
+                jeteT: "Jeté / Dégagé", jeteD: "The start is same as tendu, but the toe completely leaves the floor and is lightly lifted into the air at an angle of about 45 degrees.",
+                jeteHp: "<strong>Key Point:</strong> Agility and energy are required to throw and stretch the toes toward the air lightly and quickly.",
+                simTitle: "Virtual Barre Position Analysis", simDesc: "Even if you are not in front of a mirror, you can experience precise body alignment mechanisms in your own space. Select the system sync button below to run the smart gyro sensor simulation.",
+                simStatus: "<span class='w-2 h-2 bg-emerald-500 rounded-full animate-pulse'></span>Sensor Module Standing By", simStatusD: "Tracks device camera angle alignment and virtual Barre operation angles.", simBtn: "Sync Sensor Module",
+                commHeading: "My Ballet <span class='bold-highlight text-deepSkyBlue'>Practice Archive</span>",
+                boardTitle: "<i data-lucide='message-square' class='w-4.5 h-4.5 text-deepSkyBlue'></i>Today's Class Report 🩰", boardDesc: "A communication space to freely share each other's Aube practice logs and feedback.", boardBadge: "Live Feed Running",
+                lblNick: "Nickname / Period", lblPose: "Main Movements Learned Today", lblContent: "Practice Log & Feedback", boardSubmit: "Post Report",
+                phNick: "e.g. Morning Ballet / 3 Months", phPose: "e.g. Demi-plié Pelvic Alignment Focus", phContent: "Please record the core stimulation points or your own tips that were confusing during class.",
+                feedA1: "PlieLover (6 Months)", feedTime1: "Just now", feedT1: "Focusing on Knee Direction During Turn-out", feedC1: "When doing Tendu today, applying more force to slide the whole sole made the center much more stable! Proud to feel the core tightening without looking in the mirror.",
+                galaHeading: "The Glorious Climax of My Life,<br><span class='bold-highlight text-deepSkyBlue'>Amateur Gala & Roadmap</span>", galaDesc: "The destination of amateur ballet and the stage of dreams. Present your sophisticated skills on stage and receive your own artistry report card and customized guide roadmap.",
+                lblName: "Applicant Name", lblContact: "Contact Number", phName: "Please enter your full name.", phContact: "010-0000-0000", galaSubmit: "Apply for Stage Roadmap",
+                alertSim: "Virtual alignment diagnosis function loaded. Please check camera permissions.", alertGala: "Application successfully submitted. A director will contact you for a roadmap guide consultation."
+            }
+        };
+
+        let currentLang = 'ko';
+        let typewriterInstance; // 타이핑 효과 인스턴스 저장용
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ko' ? 'en' : 'ko';
+            document.getElementById('langBtn').innerText = currentLang === 'ko' ? 'EN' : 'KO';
+            applyLanguage();
+        }
+
+        // [기능 추가] 타이핑 효과 함수 정의
+        function typeWriter(text, elementId, speed) {
+            let i = 0;
+            const element = document.getElementById(elementId);
+            element.innerHTML = ''; // 초기화
+
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        function applyLanguage() {
+            const data = langPack[currentLang];
+            
+            document.getElementById('lang-subbrand').innerText = data.subbrand;
+            document.getElementById('nav-story').innerText = data.navStory;
+            document.getElementById('nav-attire').innerText = data.navAttire;
+            document.getElementById('nav-fundamentals').innerText = data.navFund;
+            document.getElementById('nav-trans').innerText = data.navTrans;
+            document.getElementById('nav-gala').innerText = data.navGala;
+            document.getElementById('nav-action').innerText = data.navAction;
+            
+            // [기능 추가] 언어 전환 시 타이핑 효과 실행
+            typeWriter(data.typerHeading, 'typer-heading', 80); // Pour l'Amour de l'Art 타이핑
+
+            document.getElementById('story-p').innerHTML = data.storyP;
+            document.getElementById('story-btn1').innerText = data.storyBtn1;
+            document.getElementById('story-btn2').innerText = data.storyBtn2;
+            
+            document.getElementById('attire-heading').innerHTML = data.attireHeading;
+            document.getElementById('card-leotard-t').innerText = data.leotardT;
+            document.getElementById('card-leotard-d').innerText = data.leotardD;
+            document.getElementById('card-shoes-t').innerText = data.shoesT;
+            document.getElementById('card-shoes-d').innerText = data.shoesD;
+            document.getElementById('card-band-t').innerText = data.bandT;
+            document.getElementById('card-band-d').innerText = data.bandD;
+            
+            document.getElementById('fund-heading').innerHTML = data.fundHeading;
+            document.getElementById('pos-plie-t').innerText = data.plieT;
+            document.getElementById('pos-plie-d').innerText = data.plieD;
+            document.getElementById('pos-plie-sub1').innerHTML = data.plieSub1;
+            document.getElementById('pos-plie-sub2').innerHTML = data.plieSub2;
+            document.getElementById('pos-tendu-t').innerText = data.tenduT;
+            document.getElementById('pos-tendu-d').innerText = data.tenduD;
+            document.getElementById('pos-tendu-hp').innerHTML = data.tenduHp;
+            document.getElementById('pos-jete-t').innerText = data.jeteT;
+            document.getElementById('pos-jete-d').innerText = data.jeteD;
+            document.getElementById('pos-jete-hp').innerHTML = data.jeteHp;
+            
+            document.getElementById('sim-title').innerText = data.simTitle;
+            document.getElementById('sim-desc').innerText = data.simDesc;
+            document.getElementById('sim-status').innerHTML = data.simStatus;
+            document.getElementById('sim-status-d').innerText = data.simStatusD;
+            document.getElementById('sim-btn').innerText = data.simBtn;
+            
+            document.getElementById('comm-heading').innerHTML = data.commHeading;
+            document.getElementById('board-title').innerHTML = data.boardTitle;
+            document.getElementById('board-desc').innerText = data.boardDesc;
+            document.getElementById('board-badge').innerText = data.boardBadge;
+            
+            document.getElementById('lbl-nick').innerText = data.lblNick;
+            document.getElementById('lbl-pose').innerText = data.lblPose;
+            document.getElementById('lbl-content').innerText = data.lblContent;
+            document.getElementById('board-submit-btn').innerHTML = `<i data-lucide="send" class="w-3 h-3"></i> ${data.boardSubmit}`;
+            
+            document.getElementById('diaryAuthor').placeholder = data.phNick;
+            document.getElementById('diaryTitle').placeholder = data.phPose;
+            document.getElementById('diaryContent').placeholder = data.phContent;
+            
+            document.getElementById('feed-a1').innerText = data.feedA1;
+            document.getElementById('feed-time1').innerText = data.feedTime1;
+            document.getElementById('feed-t1').innerText = data.feedT1;
+            document.getElementById('feed-c1').innerText = data.feedC1;
+            
+            document.getElementById('gala-heading').innerHTML = data.galaHeading;
+            document.getElementById('gala-desc').innerText = data.galaDesc;
+            document.getElementById('lbl-name').innerText = data.lblName;
+            document.getElementById('lbl-contact').innerText = data.lblContact;
+            document.getElementById('applicantName').placeholder = data.phName;
+            document.getElementById('applicantContact').placeholder = data.phContact;
+            document.getElementById('gala-submit-btn').innerText = data.galaSubmit;
+            
+            lucide.createIcons();
+        }
+
+        function handleSimAlert() { alert(langPack[currentLang].alertSim); }
+        function handleGalaAlert() { alert(langPack[currentLang].alertGala); }
+
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (totalScroll > 0) {
+                const scrollPercentage = (window.pageYOffset / totalScroll) * 100;
+                scrollIndicator.style.width = scrollPercentage + '%';
+            }
+
+            // [기능 추가] 패럴랙스 스크롤 효과 (메인 제목 영역)
+            const storyContent = document.getElementById('story-content');
+            const scrollY = window.pageYOffset;
+            storyContent.style.transform = `translateY(${scrollY * 0.15}px)`; // 스크롤 속도의 15%로 천천히 이동
+        });
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
+            
+            // [기능 추가] 다크모드 전환 시 파티클 색상 즉시 업데이트
+            updateParticleColors(isDark);
+        }
+
+        function updateThemeIcon(isDark) {
+            const iconEl = document.getElementById('themeIcon');
+            if (isDark) {
+                iconEl.setAttribute('data-lucide', 'sun');
+                iconEl.parentNode.classList.add('text-amber-400');
+            } else {
+                iconEl.setAttribute('data-lucide', 'moon');
+                iconEl.parentNode.classList.remove('text-amber-400');
+            }
+            lucide.createIcons();
+        }
+
+        function addDiaryRow(event) {
+            event.preventDefault();
+            const authorInput = document.getElementById('diaryAuthor');
+            const titleInput = document.getElementById('diaryTitle');
+            const contentInput = document.getElementById('diaryContent');
+            const feedContainer = document.getElementById('diaryFeedContainer');
+            
+            const newPost = document.createElement('div');
+            newPost.className = "bg-white dark:bg-darkCard p-4 rounded-2xl border border-cyan-100/50 dark:border-slate-700/50 shadow-sm space-y-1.5 animate-fade-in z-10 relative";
+            newPost.innerHTML = `
+                <div class="flex items-center justify-between gap-2 z-10 relative">
+                    <span class="text-xs font-bold text-deepSkyBlue leading-tight z-20 relative">${escapeHtml(authorInput.value)}</span>
+                    <span class="text-[10px] text-textMuted dark:text-slate-400 z-20 relative">${currentLang === 'ko' ? '방금 전' : 'Just now'}</span>
+                </div>
+                <h5 class="text-xs font-bold text-textDark dark:text-slate-200 leading-snug z-20 relative">${escapeHtml(titleInput.value)}</h5>
+                <p class="text-xs text-textMuted dark:text-slate-400 leading-snug z-20 relative">${escapeHtml(contentInput.value).replace(/\n/g, '<br>')}</p>
+            `;
+            
+            feedContainer.insertBefore(newPost, feedContainer.firstChild);
+            authorInput.value = ''; titleInput.value = ''; contentInput.value = '';
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // 초기 테마 및 다국어 셋업 실행
+        const isDarkInitial = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDarkInitial) {
+            document.documentElement.classList.add('dark');
+            updateThemeIcon(true);
+        } else {
+            document.documentElement.classList.remove('dark');
+            updateThemeIcon(false);
+        }
+        
+        // 국문 세팅 초기화 적용 (초기 타이핑 효과 포함)
+        applyLanguage();
+
+        // ------------------------------------------------------------------------------------------------
+        // [기능 추가] Canvas 파티클 배경 엔진 (다크/라이트 테마 최적화)
+        // ------------------------------------------------------------------------------------------------
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const particleCount = 60; // 파티클 개수
+
+        let particleColor; // 테마에 따라 변경될 파티클 색상
+
+        function updateParticleColors(isDark) {
+            if (isDark) {
+                // 다크 모드: 별빛처럼 반짝이는 미세한 파티클 (화이트/연한 민트)
+                particleColor = 'rgba(200, 255, 255, 0.7)'; 
+            } else {
+                // 라이트 모드: 은은한 화이트/연청색 파티클
+                particleColor = 'rgba(255, 255, 255, 0.8)';
+            }
+            // 기존 파티클 색상 업데이트
+            particles.forEach(p => p.color = particleColor);
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5; // 미세한 점 크기
+                this.speedX = (Math.random() - 0.5) * 0.4; // 부드럽고 느린 속도
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.color = particleColor;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // 화면 경계 체크 (반대편에서 등장)
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.random() * 2 * Math.PI); // 약간 반짝이는 효과를 위해 Math.random 사용
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        // 초기 색상 셋업 및 파티클 엔진 가동
+        updateParticleColors(isDarkInitial);
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // 초기 크기 설정 및 파티클 생성
+        animateParticles(); // 애니메이션 루프 시작
+        // ------------------------------------------------------------------------------------------------
+
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</body>
+</html>
