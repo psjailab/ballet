@@ -128,6 +128,7 @@
             
             <nav class="hidden md:flex items-center gap-1 text-xs font-medium tracking-wide">
                 <a href="#story" id="nav-story" class="px-3.5 py-2 bg-[#5F8060] text-[#FCFBF7] dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-[#4E6D52] dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">발레 이야기</a>
+                <a href="#studio-finder" class="px-3.5 py-2 bg-[#5F8060] text-[#FCFBF7] dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-[#4E6D52] dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">학원 찾기</a>
                 <a href="#attire" id="nav-attire" class="px-3.5 py-2 bg-[#5F8060] text-[#FCFBF7] dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-[#4E6D52] dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">의상과 도구</a>
                 <a href="#fundamentals" id="nav-fundamentals" class="px-3.5 py-2 bg-[#5F8060] text-[#FCFBF7] dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-[#4E6D52] dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">기본 자세</a>
                 <a href="#transformation" id="nav-trans" class="px-3.5 py-2 bg-[#5F8060] text-[#FCFBF7] dark:bg-slate-100 dark:text-slate-900 rounded-full font-bold shadow-sm hover:bg-[#4E6D52] dark:hover:bg-slate-200 transition-all hover:scale-105 text-center min-w-[85px]">연습 효과</a>
@@ -167,6 +168,25 @@
             </div>
         </div>
     </section>
+
+    <section id="studio-finder" class="py-24 bg-[#E1E8DB]/20">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-3xl font-serif text-[#5F8060] mb-6">Find Your Studio</h2>
+            
+            <div class="glass-panel p-8 rounded-2xl shadow-lg border border-white/50">
+                <div class="flex flex-col md:flex-row gap-4 justify-center items-center mb-6">
+                    <input type="text" id="keyword" placeholder="동네 이름을 입력하세요 (예: 강남구 발레)" 
+                        class="w-full md:w-64 px-4 py-3 rounded-xl border border-sage-200 focus:ring-2 focus:ring-sage-500 outline-none">
+                    <button onclick="searchPlaces()" class="px-6 py-3 bg-[#5F8060] text-white rounded-xl font-bold hover:bg-[#4E6D52]">
+                        학원 검색하기
+                    </button>
+                </div>
+                <div id="map" class="w-full h-[400px] rounded-xl border border-sage-200"></div>
+            </div>
+        </div>
+</section>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services"></script>   
 
     <section id="attire" class="py-24 bg-white dark:bg-darkBg px-6 transition-colors duration-300 relative z-10">
         <div class="max-w-7xl mx-auto">
